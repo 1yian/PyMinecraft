@@ -71,6 +71,41 @@ class Window(pyglet.window.Window):
             forward = math.tau / 4
             self.camera.rotation[1] = max(min(forward, self.camera.rotation[1]), -forward) # don't want to snap the character's neck
 
+    def on_key_press(self, key, modifiers):
+        currKey = pyglet.window.key
+        if not self.pause:
+            if key == currKey.W:
+                self.camera.input[2] += 1
+            elif key == currKey.A:
+                self.camera.input[0] -= 1
+            elif key == currKey.S:
+                self.camera.input[2] -= 1
+            elif key == currKey.D:
+                self.camera.input[0] += 1
+            elif key == currKey.SPACE:
+                self.camera.input[1] += 1
+            elif key == currKey.LSHIFT:
+                self.camera.input[1] -= 1
+        if key == currKey.ESCAPE:
+            self.pause = not self.pause
+            self.set_exclusive_mouse(not self.pause)
+
+    def on_key_release(self, key, modifiers):
+        if not self.pause:
+            currKey = pyglet.window.key
+            if key == currKey.W:
+                self.camera.input[2] -= 1
+            elif key == currKey.A:
+                self.camera.input[0] += 1
+            elif key == currKey.S:
+                self.camera.input[2] += 1
+            elif key == currKey.D:
+                self.camera.input[0] -= 1
+            elif key == currKey.SPACE:
+                self.camera.input[1] -= 1
+            elif key == currKey.LSHIFT:
+                self.camera.input[1] += 1 
+
 if __name__ == "__main__":
     window = Window(width = 400, height = 400, caption = 'Minecraft')
     gl.glClearColor(0.5, 0.7, 1, 1)
