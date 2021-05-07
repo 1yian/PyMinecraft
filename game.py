@@ -94,17 +94,17 @@ class Window(pyglet.window.Window):
         if not self.pause:
             currKey = pyglet.window.key
             if key == currKey.W:
-                self.camera.input[2] -= 1
+                self.camera.input[2] = 0
             elif key == currKey.A:
-                self.camera.input[0] += 1
+                self.camera.input[0] = 0
             elif key == currKey.S:
-                self.camera.input[2] += 1
+                self.camera.input[2] = 0
             elif key == currKey.D:
-                self.camera.input[0] -= 1
+                self.camera.input[0] = 0
             elif key == currKey.SPACE:
-                self.camera.input[1] -= 1
+                self.camera.input[1] = 0
             elif key == currKey.LSHIFT:
-                self.camera.input[1] += 1 
+                self.camera.input[1] = 0 
 
 if __name__ == "__main__":
     window = Window(width = 400, height = 400, caption = 'Minecraft')
