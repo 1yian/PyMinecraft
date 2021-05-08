@@ -24,6 +24,7 @@ class Camera:
         self.currentPosition[1] += self.movementInput[1] * distanceUnit
     
     def updateMVP(self, shader, windowWidth, windowHeight):
+        self.windowWidth, self.windowHeight = windowWidth, windowHeight
         # projection matrix
         self.projectionMatrix.alter(glm.perspective(math.radians(90), float(self.windowWidth) / self.windowHeight, 0.1, 500))
 

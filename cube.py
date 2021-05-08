@@ -72,6 +72,7 @@ class Cube:
                 self.texture_coords[face_idx][i * 3 + 2] = texture_idx
 
     def get_face_info(self, face_type):
-        idx = Cube.ALL_FACES.index(face_type)
+        # idx = Cube.ALL_FACES.index(face_type)
+        idx = face_type
         return Cube.VERTICES[idx].copy(), Cube.INDICES[idx].copy(), self.texture_coords[idx], Cube.SHADING_VALS[
             idx].copy()

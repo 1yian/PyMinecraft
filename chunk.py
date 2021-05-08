@@ -55,13 +55,14 @@ class Chunk:
         self.vertices, self.tex_coords, self.shading_values, self.indices = [], [], [], []
 
         def add_face(face_type, position):
-            block_type = self.world.get_block_type_at(position)
-            if block_type == CubeTypes.air:
-                return
+            print(self.world_coord_pos)
+            print("Adding face", face_type, "at", position)
+            x, y, z = position
+            block_type = self.block_types[x][y][z]
 
             cube = self.cube_types[block_type]
             positions, _, texture_coords, shading_vals = cube.get_face_info(face_type)
-            x, y, z = position
+
             for i in range(4):
                 positions[i * 3] += x
                 positions[i * 3 + 1] += y
@@ -82,13 +83,21 @@ class Chunk:
                     if block_type != CubeTypes.air:
                         xw, yw, zw = (self.world_coord_pos[0] + x,
                                       self.world_coord_pos[1] + y,
-                                      self.world_coord_pos[0] + z)
-                        add_face(0, (xw + 1, yw, zw))
-                        add_face(1, (xw - 1, yw, zw))
-                        add_face(2, (xw, yw + 1, zw))
-                        add_face(3, (xw, yw - 1, zw))
-                        add_face(4, (xw, yw, zw + 1))
-                        add_face(5, (xw, yw, zw - 1))
+                                      self.world_coord_pos[2] + z)
+                        position = (x, y, z)
+
+                        if self.world.get_block_type_at((xw + 1, yw, zw)) == CubeTypes.air:
+                            add_face(0, position)
+                        if self.world.get_block_type_at((xw - 1, yw, zw)) == CubeTypes.air:
+                            add_face(1, position)
+                        if self.world.get_block_type_at((xw, yw + 1, zw)) == CubeTypes.air:
+                            add_face(2, position)
+                        if self.world.get_block_type_at((xw, yw - 1, zw)) == CubeTypes.air:
+                            add_face(3, position)
+                        if self.world.get_block_type_at((xw, yw, zw + 1)) == CubeTypes.air:
+                            add_face(4, position)
+                        if self.world.get_block_type_at((xw, yw, zw - 1)) == CubeTypes.air:
+                            add_face(5, position)
 
         if len(self.vertices) == 0:
             return
@@ -134,6 +143,7 @@ class Chunk:
         self.synced_with_gpu = True
 
     def set_block(self, local_position, block_type):
+
         x, y, z = local_position
         self.block_types[x][y][z] = block_type
         self.synced_with_gpu = False

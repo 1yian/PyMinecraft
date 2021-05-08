@@ -66,6 +66,7 @@ class Window(pyglet.window.Window):
 
     def on_draw(self):
         self.camera.updateMVP(self.shader, self.width, self.height)
+        self.world.draw()
         self.clear()
 
     def on_resize(self, width, height):
@@ -81,11 +82,11 @@ class Window(pyglet.window.Window):
     def mouse_movement_action(self, dx, dy):
         if not self.pause:
             sens = 0.001
-            self.camera.rotation[0] -= sens * dx
-            self.camera.rotation[1] += sens * dy
+            self.camera.currentRotation[0] -= sens * dx
+            self.camera.currentRotation[1] += sens * dy
 
             forward = math.tau / 4
-            self.camera.rotation[1] = max(min(forward, self.camera.rotation[1]),
+            self.camera.currentRotation[1] = max(min(forward, self.camera.currentRotation[1]),
                                           -forward)  # don't want to snap the character's neck
 
     def on_key_press(self, key, modifiers):

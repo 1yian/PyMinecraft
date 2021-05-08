@@ -18,11 +18,13 @@ class World:
         self.set_block_type_at((0, 0, 0), CubeTypes.cobble)
 
     def get_block_type_at(self, pos):
+        if pos not in self.chunks:
+            return CubeTypes.air
         chunk = self.chunks[self.block_coord_to_chunk_pos(pos)]
         if chunk is not None:
-            local_pos = (int(math.floor(pos[0] % chunk.Chunk.SIDE_LENGTH)),
-                         int(math.floor(pos[1] % chunk.Chunk.SIDE_LENGTH)),
-                         int(math.floor(pos[1] % chunk.Chunk.SIDE_LENGTH)))
+            local_pos = (int(math.floor(pos[0] % Chunk.SIDE_LENGTH)),
+                         int(math.floor(pos[1] % Chunk.SIDE_LENGTH)),
+                         int(math.floor(pos[2] % Chunk.SIDE_LENGTH)))
             return chunk.block_types[local_pos[0]][local_pos[1]][local_pos[2]]
         return CubeTypes.air
 
@@ -32,6 +34,7 @@ class World:
             local_pos = (int(math.floor(pos[0] % Chunk.SIDE_LENGTH)),
                          int(math.floor(pos[1] % Chunk.SIDE_LENGTH)),
                          int(math.floor(pos[1] % Chunk.SIDE_LENGTH)))
+            #print(local_pos)
             chunk.set_block(local_pos, block_type)
 
     @staticmethod
@@ -42,7 +45,7 @@ class World:
         return chunk_coord
 
     def draw(self):
-        for chunk in self.chunks:
+        for chunk in self.chunks.values():
             if not chunk.synced_with_gpu:
-                chunk.synced_with_gpu()
+                chunk.pass_to_gpu()
             chunk.draw()
