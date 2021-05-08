@@ -53,7 +53,7 @@ class Window(pyglet.window.Window):
 
         self.world = World(self.cube_types)
         # init shader
-        self.shader = shaders.Shader("shaders/VertexShader.glsl", "shaders/FragmentShader.glsl")
+        self.shader = shaders.Shader("shaders\VertexShader.glsl", "shaders\FragmentShader.glsl")
         self.shader.use()
 
         self.pause = False
@@ -126,6 +126,5 @@ class Window(pyglet.window.Window):
 
 
 if __name__ == "__main__":
-    window = Window(width=400, height=400, caption='Minecraft')
-    gl.glClearColor(0.5, 0.7, 1, 1)
+    window = Window(width = 800, height = 600, caption = "Minecraft clone", resizable = True, vsync = False)
     pyglet.app.run()

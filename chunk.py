@@ -55,12 +55,11 @@ class Chunk:
         self.vertices, self.tex_coords, self.shading_values, self.indices = [], [], [], []
 
         def add_face(face_type, position):
-            print(self.world_coord_pos)
-            print("Adding face", face_type, "at", position)
             x, y, z = position
             block_type = self.block_types[x][y][z]
 
             cube = self.cube_types[block_type]
+            #print(cube.textures)
             positions, _, texture_coords, shading_vals = cube.get_face_info(face_type)
 
             for i in range(4):
@@ -100,6 +99,7 @@ class Chunk:
                             add_face(5, position)
 
         if len(self.vertices) == 0:
+            self.synced_with_gpu = True
             return
         gl.glBindVertexArray(self.vao)
 
@@ -149,6 +149,8 @@ class Chunk:
         self.synced_with_gpu = False
 
     def draw(self):
+        if len(self.indices) == 0:
+            return
         gl.glBindVertexArray(self.vao)
         gl.glDrawElements(
             gl.GL_TRIANGLES,
