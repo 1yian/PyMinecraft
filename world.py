@@ -15,7 +15,10 @@ class World:
                 for z in range(-1, 2):
                     self.chunks[(x, y, z)] = Chunk((x * 16, y * 16, z * 16), self.cube_types, self)
 
-        self.set_block_type_at((0, 0, 0), CubeTypes.cobble)
+        for x in range(-16, 17):
+            for y in range(-16, 17):
+                for z in range(-16, 17):
+                    self.set_block_type_at((x, y, z), CubeTypes.cobble)
 
     def get_block_type_at(self, pos):
         if pos not in self.chunks:

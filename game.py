@@ -53,7 +53,7 @@ class Window(pyglet.window.Window):
 
         self.world = World(self.cube_types)
         # init shader
-        self.shader = shaders.Shader("shaders/VertexShader.glsl", "shaders/FragmentShader.glsl")
+        self.shader = shaders.Shader("shaders\VertexShader.glsl", "shaders\FragmentShader.glsl")
         self.shader.use()
 
         self.pause = False
@@ -93,17 +93,17 @@ class Window(pyglet.window.Window):
         currKey = pyglet.window.key
         if not self.pause:
             if key == currKey.W:
-                self.camera.input[2] += 1
+                self.camera.movementInput[2] += 1
             elif key == currKey.A:
-                self.camera.input[0] -= 1
+                self.camera.movementInput[0] -= 1
             elif key == currKey.S:
-                self.camera.input[2] -= 1
+                self.camera.movementInput[2] -= 1
             elif key == currKey.D:
-                self.camera.input[0] += 1
+                self.camera.movementInput[0] += 1
             elif key == currKey.SPACE:
-                self.camera.input[1] += 1
+                self.camera.movementInput[1] += 1
             elif key == currKey.LSHIFT:
-                self.camera.input[1] -= 1
+                self.camera.movementInput[1] -= 1
         if key == currKey.ESCAPE:
             self.pause = not self.pause
             self.set_exclusive_mouse(not self.pause)
@@ -112,20 +112,19 @@ class Window(pyglet.window.Window):
         if not self.pause:
             currKey = pyglet.window.key
             if key == currKey.W:
-                self.camera.input[2] -= 1
+                self.camera.movementInput[2] -= 1
             elif key == currKey.A:
-                self.camera.input[0] += 1
+                self.camera.movementInput[0] += 1
             elif key == currKey.S:
-                self.camera.input[2] += 1
+                self.camera.movementInput[2] += 1
             elif key == currKey.D:
-                self.camera.input[0] -= 1
+                self.camera.movementInput[0] -= 1
             elif key == currKey.SPACE:
-                self.camera.input[1] -= 1
+                self.camera.movementInput[1] -= 1
             elif key == currKey.LSHIFT:
-                self.camera.input[1] += 1
+                self.camera.movementInput[1] += 1
 
 
 if __name__ == "__main__":
-    window = Window(width=400, height=400, caption='Minecraft')
-    gl.glClearColor(0.5, 0.7, 1, 1)
+    window = Window(width = 800, height = 600, caption = "Minecraft clone", resizable = True, vsync = False)
     pyglet.app.run()
