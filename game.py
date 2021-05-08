@@ -17,7 +17,7 @@ class Window(pyglet.window.Window):
 
         self.camera = camera.Camera()
 
-        self.textures_dict = TextureDict()
+        self.textures_dict = TextureDict(16, 16)
 
         self.cube_types = {
 
@@ -40,14 +40,16 @@ class Window(pyglet.window.Window):
             }),
 
             CubeTypes.grass: Cube(self.textures_dict, {
-                    'right': 'grass_side',
-                    'left': 'grass_side',
-                    'top': 'grass',
-                    'bottom': 'dirt',
-                    'front': 'grass_side',
-                    'back': 'grass_side',
+                'right': 'grass_side',
+                'left': 'grass_side',
+                'top': 'grass',
+                'bottom': 'dirt',
+                'front': 'grass_side',
+                'back': 'grass_side',
             }),
         }
+
+        self.textures_dict.generate_mipmaps()
 
         self.world = World(self.cube_types)
         # init shader

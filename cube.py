@@ -1,4 +1,3 @@
-import chunk
 from copy import deepcopy
 from textures.textures import TextureDict
 import enum
