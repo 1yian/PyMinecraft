@@ -37,4 +37,4 @@ class Camera:
         # MVP matrix
         mvpMatrix = matrix_pyglm.MatrixGLM4D((self.projectionMatrix.getGLMMatrix()) * (self.modelviewMatrix.getGLMMatrix()))
         # Send MVP matrix to shader
-        shader.uniform_matrix(shader.find_uniform(b"mvpMatrix"), mvpMatrix)
+        shader.passMatrixToShaders(shader.getUniformInShaders(b"mvpMatrix"), mvpMatrix)

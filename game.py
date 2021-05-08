@@ -4,6 +4,7 @@ import glm
 from cube import Cube
 from ctypes import byref, sizeof
 import camera
+import Shaders.Shaders as shaders
 
 MIN_SIZE = 50
 
@@ -39,6 +40,10 @@ class Window(pyglet.window.Window):
         gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self.ibo)
         gl.glBufferData(gl.GL_ELEMENT_ARRAY_BUFFER, sizeof(gl.GLuint * len(Cube.INDICES)),
                         (gl.GLuint * len(Cube.INDICES))(*Cube.INDICES), gl.GL_STATIC_DRAW)
+
+        # init shader
+        self.shader = shaders.Shader("Shaders\VertexShader.glsl", "Shaders\FragmentShader.glsl")
+        self.shader.use()
         
         self.pause = False
         self.set_exclusive_mouse(True)
