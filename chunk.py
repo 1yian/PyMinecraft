@@ -1,23 +1,14 @@
 import ctypes
-import math
-import cube
+from cube import Cube, CubeTypes
 import pyglet.gl as gl
-import enum
-
-
-class BlockTypes(enum.Enum):
-    air = 0
-    dirt = 1
-    grass = 2
-    cobble = 3
-    wood = 4
 
 
 # Represents a single mesh of the exposed faces of a chunk of cubes.
 class Chunk:
     SIDE_LENGTH = 16
 
-    def __init__(self, chunk_coord_pos, textures, world):
+    def __init__(self, chunk_coord_pos, cube_types, world):
+
         # Set position variables
         self.chunk_coord_pos = chunk_coord_pos
         self.world_coord_pos = (
@@ -25,12 +16,12 @@ class Chunk:
             self.chunk_coord_pos[2] * Chunk.SIDE_LENGTH)
 
         # Abstractly store each block in the chunk
-        self.block_types = [[[BlockTypes.air for _ in range(Chunk.SIDE_LENGTH)] for _ in range(Chunk.SIDE_LENGTH)] for _
+        self.block_types = [[[CubeTypes.air for _ in range(Chunk.SIDE_LENGTH)] for _ in range(Chunk.SIDE_LENGTH)] for _
                             in
                             range(Chunk.SIDE_LENGTH)]
 
-        self.textures = textures
         self.world = world
+        self.cube_types = cube_types
 
         # Initialize a VAO
         self.vao = gl.GLuint(0)
@@ -64,7 +55,12 @@ class Chunk:
         self.vertices, self.tex_coords, self.shading_values, self.indices = [], [], [], []
 
         def add_face(face_type, position):
-            positions, _, texture_coords, shading_vals = cube.Cube.get_face_info(face_type)
+            block_type = self.world.get_block_type_at(position)
+            if block_type == CubeTypes.air:
+                return
+
+            cube = self.cube_types[block_type]
+            positions, _, texture_coords, shading_vals = cube.get_face_info(face_type)
             x, y, z = position
             for i in range(4):
                 positions[i * 3] += x
@@ -83,23 +79,16 @@ class Chunk:
             for y in range(Chunk.SIDE_LENGTH):
                 for z in range(Chunk.SIDE_LENGTH):
                     block_type = self.block_types[x][y][z]
-                    if block_type != BlockTypes.air:
-                        position = (self.world_coord_pos[0] + x,
-                                    self.world_coord_pos[1] + y,
-                                    self.world_coord_pos[0] + z)
-
-                        if self.world.get_block_type_at((x + 1, y, z)) != BlockTypes.air:
-                            add_face(0, position)
-                        if self.world.get_block_type_at((x - 1, y, z)) != BlockTypes.air:
-                            add_face(1, position)
-                        if self.world.get_block_type_at((x, y + 1, z)) != BlockTypes.air:
-                            add_face(2, position)
-                        if self.world.get_block_type_at((x, y - 1, z)) != BlockTypes.air:
-                            add_face(3, position)
-                        if self.world.get_block_type_at((x, y, z + 1)) != BlockTypes.air:
-                            add_face(4, position)
-                        if self.world.get_block_type_at((x, y, z - 1)) != BlockTypes.air:
-                            add_face(5, position)
+                    if block_type != CubeTypes.air:
+                        xw, yw, zw = (self.world_coord_pos[0] + x,
+                                      self.world_coord_pos[1] + y,
+                                      self.world_coord_pos[0] + z)
+                        add_face(0, (xw + 1, yw, zw))
+                        add_face(1, (xw - 1, yw, zw))
+                        add_face(2, (xw, yw + 1, zw))
+                        add_face(3, (xw, yw - 1, zw))
+                        add_face(4, (xw, yw, zw + 1))
+                        add_face(5, (xw, yw, zw - 1))
 
         if len(self.vertices) == 0:
             return
@@ -142,11 +131,17 @@ class Chunk:
             (gl.GLuint * len(self.indices))(*self.indices),
             gl.GL_STATIC_DRAW)
 
+        self.synced_with_gpu = True
+
+    def set_block(self, local_position, block_type):
+        x, y, z = local_position
+        self.block_types[x][y][z] = block_type
+        self.synced_with_gpu = False
+
     def draw(self):
         gl.glBindVertexArray(self.vao)
-
         gl.glDrawElements(
             gl.GL_TRIANGLES,
-            len(self.mesh_indices),
+            len(self.indices),
             gl.GL_UNSIGNED_INT,
             None)

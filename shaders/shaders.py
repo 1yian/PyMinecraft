@@ -1,5 +1,7 @@
 import pyglet.gl as gl
 from ctypes import byref, sizeof
+import ctypes
+
 
 class Shader:
     def __init__(self, vertShaderPath, fragShaderPath):
@@ -30,7 +32,8 @@ class Shader:
         return gl.glGetUniformLocation(self.glProgram, ctypes.create_string_buffer(name))
 
     def passMatrixToShaders(self, dest, mat):
-        gl.glUniformMatrix4fv(dest, 1, gl.GL_FALSE, (gl.GLfloat * 16) (*sum(mat.getPyMatrix(), [])))
+        gl.glUniformMatrix4fv(dest, 1, gl.GL_FALSE, (gl.GLfloat * 16)(*sum(mat.getPyMatrix(), [])))
+
 
 def initShader(shader, path):
     # read shader file
@@ -39,7 +42,8 @@ def initShader(shader, path):
     tempFile.close()
 
     # compile shader
-    pointerToBuffer = ctypes.cast(ctypes.pointer(ctypes.pointer(ctypes.create_string_buffer(shaderDest))), ctypes.POINTER(ctypes.POINTER(ctypes.c_char)))
+    pointerToBuffer = ctypes.cast(ctypes.pointer(ctypes.pointer(ctypes.create_string_buffer(shaderDest))),
+                                  ctypes.POINTER(ctypes.POINTER(ctypes.c_char)))
 
     gl.glShaderSource(shader, 1, pointerToBuffer, ctypes.byref(ctypes.c_int(len(shaderDest) + 1)))
     gl.glCompileShader(shader)
@@ -47,12 +51,13 @@ def initShader(shader, path):
     # handle errors
     logLength = gl.GLint(0)
     gl.glGetShaderiv(shader, gl.GL_INFO_LOG_LENGTH, ctypes.byref(logLength))
-    
+
     stringBuffer = ctypes.create_string_buffer(logLength.value)
     gl.glGetShaderInfoLog(shader, logLength, None, stringBuffer)
 
     if logLength:
         raise ShaderErrorHandler(str(stringBuffer.value))
+
 
 class ShaderErrorHandler(Exception):
     def __init__(self, error):

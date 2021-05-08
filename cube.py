@@ -1,3 +1,14 @@
+import chunk
+from copy import deepcopy
+from textures.textures import TextureDict
+import enum
+
+
+class CubeTypes(enum.Enum):
+    air = 0
+    dirt = 1
+    grass = 2
+    cobble = 3
 
 
 class Cube:
@@ -39,20 +50,29 @@ class Cube:
 
     ALL_FACES = ['right', 'left', 'top', 'bottom', 'front', 'back']
 
-    def __init__(self, texture, faces=['right', 'left', 'top', 'bottom', 'front', 'back']):
+    def __init__(self, texture_dict, textures=None):
+        if textures is None:
+            textures = {
+                'right': 'cobble',
+                'left': 'cobble',
+                'top': 'cobble',
+                'bottom': 'cobble',
+                'front': 'cobble',
+                'back': 'cobble',
+            }
 
-        self.texture_coords = Cube.TEXTURE_COORDS.copy()
+        self.textures = textures
 
-        for face in faces:
-            if face in Cube.ALL_FACES:
-                face_idx = Cube.ALL_FACES.index(face)
+        self.texture_coords = deepcopy(Cube.TEXTURE_COORDS)
 
-    @staticmethod
-    def get_face_info(face_type):
+        for face in Cube.ALL_FACES:
+            texture = self.textures[face]
+            texture_idx = texture_dict.get(texture)
+            face_idx = Cube.ALL_FACES.index(face)
+            for i in range(4):
+                self.texture_coords[face_idx][i * 3 + 2] = texture_idx
+
+    def get_face_info(self, face_type):
         idx = Cube.ALL_FACES.index(face_type)
-        return Cube.VERTICES[idx].copy(), Cube.INDICES[idx].copy(), Cube.TEXTURE_COORDS[idx].copy(), Cube.SHADING_VALS[idx].copy()
-
-
-
-
-
+        return Cube.VERTICES[idx].copy(), Cube.INDICES[idx].copy(), self.texture_coords[idx], Cube.SHADING_VALS[
+            idx].copy()

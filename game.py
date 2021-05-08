@@ -1,10 +1,11 @@
 import pyglet
 import pyglet.gl as gl
-import glm
-from cube import Cube
-from ctypes import byref, sizeof
+from world import World
+from cube import Cube, CubeTypes
+from textures.textures import TextureDict
 import camera
-import Shaders.Shaders as shaders
+import shaders.shaders as shaders
+import math
 
 MIN_SIZE = 50
 
@@ -16,35 +17,43 @@ class Window(pyglet.window.Window):
 
         self.camera = camera.Camera()
 
-        # Initialize VAO
-        self.VAO = gl.GLuint(0)
-        gl.glGenVertexArrays(1, byref(self.VAO))
-        gl.glBindVertexArray(self.VAO)
+        self.textures_dict = TextureDict()
 
-        gl.glVertexAttribPointer(0, 3, gl.GL_FLOAT, gl.GL_FALSE, 0, 0)
-        gl.glEnableVertexAttribArray(0)
+        self.cube_types = {
 
-        # Initialize vertex VBO
-        self.vertex_VBO = gl.GLuint(0)
-        gl.glGenBuffers(1, byref(self.vertex_VBO))
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.vertex_VBO)
-        gl.glBufferData(gl.GL_ARRAY_BUFFER, sizeof(gl.GLfloat * len(Cube.VERTICES)),
-                        (gl.GLfloat * len(Cube.VERTICES))(*Cube.VERTICES), gl.GL_STATIC_DRAW)
+            CubeTypes.dirt: Cube(self.textures_dict, {
+                'right': 'dirt',
+                'left': 'dirt',
+                'top': 'dirt',
+                'bottom': 'dirt',
+                'front': 'dirt',
+                'back': 'dirt',
+            }),
 
-        gl.glVertexAttribPointer(0, 3, gl.GL_FLOAT, gl.GL_FALSE, 0, 0)
-        gl.glEnableVertexAttribArray(1)
+            CubeTypes.cobble: Cube(self.textures_dict, {
+                'right': 'cobble',
+                'left': 'cobble',
+                'top': 'cobble',
+                'bottom': 'cobble',
+                'front': 'cobble',
+                'back': 'cobble',
+            }),
 
-        # Initialize index BO
-        self.ibo = gl.GLuint(0)
-        gl.glGenBuffers(1, self.ibo)
-        gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self.ibo)
-        gl.glBufferData(gl.GL_ELEMENT_ARRAY_BUFFER, sizeof(gl.GLuint * len(Cube.INDICES)),
-                        (gl.GLuint * len(Cube.INDICES))(*Cube.INDICES), gl.GL_STATIC_DRAW)
+            CubeTypes.grass: Cube(self.textures_dict, {
+                    'right': 'grass_side',
+                    'left': 'grass_side',
+                    'top': 'grass',
+                    'bottom': 'dirt',
+                    'front': 'grass_side',
+                    'back': 'grass_side',
+            }),
+        }
 
+        self.world = World(self.cube_types)
         # init shader
-        self.shader = shaders.Shader("Shaders\VertexShader.glsl", "Shaders\FragmentShader.glsl")
+        self.shader = shaders.Shader("shaders/VertexShader.glsl", "shaders/FragmentShader.glsl")
         self.shader.use()
-        
+
         self.pause = False
         self.set_exclusive_mouse(True)
 
@@ -54,11 +63,11 @@ class Window(pyglet.window.Window):
         self.camera.changeCameraOrientation(dt)
 
     def on_draw(self):
-        self.camera.updateMVP(shader, self.width, self.height)
+        self.camera.updateMVP(self.shader, self.width, self.height)
         self.clear()
 
     def on_resize(self, width, height):
-        print(f"Resize {width} * {height}") # print out window size
+        print(f"Resize {width} * {height}")  # print out window size
         gl.glViewport(0, 0, width, height)
 
     def on_mouse_motion(self, x, y, dx, dy):
@@ -74,7 +83,8 @@ class Window(pyglet.window.Window):
             self.camera.rotation[1] += sens * dy
 
             forward = math.tau / 4
-            self.camera.rotation[1] = max(min(forward, self.camera.rotation[1]), -forward) # don't want to snap the character's neck
+            self.camera.rotation[1] = max(min(forward, self.camera.rotation[1]),
+                                          -forward)  # don't want to snap the character's neck
 
     def on_key_press(self, key, modifiers):
         currKey = pyglet.window.key
@@ -109,9 +119,10 @@ class Window(pyglet.window.Window):
             elif key == currKey.SPACE:
                 self.camera.input[1] -= 1
             elif key == currKey.LSHIFT:
-                self.camera.input[1] += 1 
+                self.camera.input[1] += 1
+
 
 if __name__ == "__main__":
-    window = Window(width = 400, height = 400, caption = 'Minecraft')
+    window = Window(width=400, height=400, caption='Minecraft')
     gl.glClearColor(0.5, 0.7, 1, 1)
     pyglet.app.run()
