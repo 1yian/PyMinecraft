@@ -67,6 +67,7 @@ class Window(pyglet.window.Window):
         self.camera.changeCameraOrientation(dt)
 
     def on_draw(self):
+        gl.glEnable(gl.GL_DEPTH_TEST)
         self.camera.updateMVP(self.shader, self.width, self.height)
         self.clear()
         self.world.draw()
