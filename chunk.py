@@ -12,8 +12,8 @@ class Chunk:
         # Set position variables
         self.chunk_coord_pos = chunk_coord_pos
         self.world_coord_pos = (
-            self.chunk_coord_pos[0] * Chunk.SIDE_LENGTH, self.chunk_coord_pos[1] * Chunk.SIDE_LENGTH,
-            self.chunk_coord_pos[2] * Chunk.SIDE_LENGTH)
+            self.chunk_coord_pos[0], self.chunk_coord_pos[1],
+            self.chunk_coord_pos[2])
 
         # Abstractly store each block in the chunk
         self.block_types = [[[CubeTypes.air for _ in range(Chunk.SIDE_LENGTH)] for _ in range(Chunk.SIDE_LENGTH)] for _
@@ -83,7 +83,9 @@ class Chunk:
                         xw, yw, zw = (self.world_coord_pos[0] + x,
                                       self.world_coord_pos[1] + y,
                                       self.world_coord_pos[2] + z)
+
                         position = (x, y, z)
+                        #print(xw, yw, zw)
 
                         if self.world.get_block_type_at((xw + 1, yw, zw)) == CubeTypes.air:
                             add_face(0, position)

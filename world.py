@@ -10,20 +10,23 @@ class World:
         self.cube_types = cube_types
         self.chunks = {}
 
-        for x in range(-1, 2):
-            for y in range(-1, 2):
-                for z in range(-1, 2):
+        for x in range(-4, 4):
+            for y in range(-4, 4):
+                for z in range(-4, 4):
+                    print(x*16, y*16, z*16)
                     self.chunks[(x, y, z)] = Chunk((x * 16, y * 16, z * 16), self.cube_types, self)
 
-        for x in range(-16, 17):
-            for y in range(-16, 17):
-                for z in range(-16, 17):
-                    self.set_block_type_at((x, y, z), CubeTypes.cobble)
+
+        for x in range(-16, 16):
+            for z in range(-16, 16):
+                self.set_block_type_at((x, 0, z), CubeTypes.grass)
 
     def get_block_type_at(self, pos):
-        if pos not in self.chunks:
+        chunk_coord = self.block_coord_to_chunk_pos(pos)
+        if chunk_coord not in self.chunks:
+            #print(chunk_coord, pos)
             return CubeTypes.air
-        chunk = self.chunks[self.block_coord_to_chunk_pos(pos)]
+        chunk = self.chunks[chunk_coord]
         if chunk is not None:
             local_pos = (int(math.floor(pos[0] % Chunk.SIDE_LENGTH)),
                          int(math.floor(pos[1] % Chunk.SIDE_LENGTH)),
@@ -36,8 +39,7 @@ class World:
         if chunk is not None:
             local_pos = (int(math.floor(pos[0] % Chunk.SIDE_LENGTH)),
                          int(math.floor(pos[1] % Chunk.SIDE_LENGTH)),
-                         int(math.floor(pos[1] % Chunk.SIDE_LENGTH)))
-            #print(local_pos)
+                         int(math.floor(pos[2] % Chunk.SIDE_LENGTH)))
             chunk.set_block(local_pos, block_type)
 
     @staticmethod
