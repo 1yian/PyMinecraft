@@ -59,6 +59,8 @@ class Window(pyglet.window.Window):
         self.pause = False
         self.set_exclusive_mouse(True)
 
+        pyglet.clock.schedule_interval(self.update, 1.0 / 10000)
+
     def update(self, dt):
         if self.pause:
             self.camera.movementInput = [0, 0, 0]
@@ -66,8 +68,9 @@ class Window(pyglet.window.Window):
 
     def on_draw(self):
         self.camera.updateMVP(self.shader, self.width, self.height)
-        self.world.draw()
         self.clear()
+        self.world.draw()
+        
 
     def on_resize(self, width, height):
         print(f"Resize {width} * {height}")  # print out window size
