@@ -15,7 +15,7 @@ class Camera:
         self.movementInput = [0, 0, 0]
 
     def changeCameraOrientation(self, dt):
-        distanceUnit = 5 * dt
+        distanceUnit = 8 * dt
 
         if self.movementInput[0] or self.movementInput[2]:
             theta = self.currentRotation[0] + math.atan2(self.movementInput[2], self.movementInput[0]) - forward
