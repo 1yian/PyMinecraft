@@ -63,5 +63,5 @@ class World:
         for chunk in self.chunks.values():
             if not chunk.synced_with_gpu:
                 chunk.pass_to_gpu()
-            # if chunk.is_in_range(camera_pos, 1300):
-            chunk.draw()
+            if chunk.is_in_range(camera_pos, 48):
+                chunk.draw()

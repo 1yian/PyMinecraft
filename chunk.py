@@ -1,7 +1,7 @@
 import ctypes
 from cube import Cube, CubeTypes
 import pyglet.gl as gl
-
+import math
 
 # Represents a single mesh of the exposed faces of a chunk of cubes.
 class Chunk:
@@ -151,9 +151,9 @@ class Chunk:
         self.synced_with_gpu = False
 
     def is_in_range(self, camera_pos, max_distance):
-        dist = sum([(camera_pos[i] - self.world_coord_pos[i] + Chunk.SIDE_LENGTH / 2)**2 for i in range(3)])
+        dist = math.sqrt(sum([(camera_pos[i] - self.world_coord_pos[i])**2 for i in [0, 2]]))
         #print(dist)
-        return dist < max_distance
+        return dist <= max_distance
 
     def draw(self):
         if len(self.indices) == 0:
