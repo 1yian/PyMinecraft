@@ -9,7 +9,7 @@ class Camera:
         self.projectionMatrix = matrix_pyglm.MatrixGLM4D(glm.mat4(1.0))
         self.modelviewMatrix = matrix_pyglm.MatrixGLM4D(glm.mat4(1.0))
 
-        self.currentPosition = [0, 0, -3]
+        self.currentPosition = [0, 10, 0]
         self.currentRotation = [forward, 0]
 
         self.movementInput = [0, 0, 0]

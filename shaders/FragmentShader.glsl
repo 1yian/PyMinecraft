@@ -1,12 +1,12 @@
-#version 330 // specify we are indeed using modern opengl
+#version 330
 
-out vec4 fragment_colour; // output of our shader
+out vec4 fragment_colour;
 
-uniform sampler2DArray texture_array_sampler;
+uniform sampler2DArray interpolatedTexturesArray;
 
-in vec3 local_position;  // interpolated vertex position
-in vec3 interpolated_tex_coords;
+in vec3 texCoordsFrag;
+in float diffuseValueFrag;
 
 void main(void) {
-	fragment_colour = texture(texture_array_sampler, interpolated_tex_coords); // set the output colour based on the vertex position
+	fragment_colour = diffuseValueFrag * texture(interpolatedTexturesArray, texCoordsFrag);
 }

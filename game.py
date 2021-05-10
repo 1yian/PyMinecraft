@@ -130,6 +130,6 @@ class Window(pyglet.window.Window):
 
 
 if __name__ == "__main__":
-    window = Window(width = 800, height = 600, caption = "Minecraft clone", resizable = True, vsync = False)
+    window = Window(width = 800, height = 600, caption = "Voxel World", resizable = True, vsync = False)
     gl.glClearColor(0.5, 0.7, 1, 1)
     pyglet.app.run()
