@@ -70,7 +70,7 @@ class Window(pyglet.window.Window):
         gl.glEnable(gl.GL_DEPTH_TEST)
         self.camera.updateMVP(self.shader, self.width, self.height)
         self.clear()
-        self.world.draw()
+        self.world.draw(self.camera.currentPosition)
         
 
     def on_resize(self, width, height):
@@ -131,4 +131,5 @@ class Window(pyglet.window.Window):
 
 if __name__ == "__main__":
     window = Window(width = 800, height = 600, caption = "Minecraft clone", resizable = True, vsync = False)
+    gl.glClearColor(0.5, 0.7, 1, 1)
     pyglet.app.run()

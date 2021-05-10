@@ -7,14 +7,10 @@ import pyglet.gl as gl
 class Chunk:
     SIDE_LENGTH = 16
 
-    def __init__(self, chunk_coord_pos, cube_types, world):
+    def __init__(self, world_coord_pos, cube_types, world):
 
         # Set position variables
-        self.chunk_coord_pos = chunk_coord_pos
-        self.world_coord_pos = (
-            self.chunk_coord_pos[0], self.chunk_coord_pos[1],
-            self.chunk_coord_pos[2])
-
+        self.world_coord_pos = world_coord_pos
         # Abstractly store each block in the chunk
         self.block_types = [[[CubeTypes.air for _ in range(Chunk.SIDE_LENGTH)] for _ in range(Chunk.SIDE_LENGTH)] for _
                             in
@@ -62,10 +58,14 @@ class Chunk:
             #print(cube.textures)
             positions, _, texture_coords, shading_vals = cube.get_face_info(face_type)
 
+            xw, yw, zw = (self.world_coord_pos[0] + x,
+                          self.world_coord_pos[1] + y,
+                          self.world_coord_pos[2] + z)
+
             for i in range(4):
-                positions[i * 3] += x
-                positions[i * 3 + 1] += y
-                positions[i * 3 + 2] += z
+                positions[i * 3] += xw
+                positions[i * 3 + 1] += yw
+                positions[i * 3 + 2] += zw
             self.vertices += positions
 
             min_index = 0 if len(self.indices) == 0 else max(self.indices) + 1
@@ -85,7 +85,7 @@ class Chunk:
                                       self.world_coord_pos[2] + z)
 
                         position = (x, y, z)
-                        #print(xw, yw, zw)
+
 
                         if self.world.get_block_type_at((xw + 1, yw, zw)) == CubeTypes.air:
                             add_face(0, position)
@@ -149,6 +149,11 @@ class Chunk:
         x, y, z = local_position
         self.block_types[x][y][z] = block_type
         self.synced_with_gpu = False
+
+    def is_in_range(self, camera_pos, max_distance):
+        dist = sum([(camera_pos[i] - self.world_coord_pos[i] + Chunk.SIDE_LENGTH / 2)**2 for i in range(3)])
+        #print(dist)
+        return dist < max_distance
 
     def draw(self):
         if len(self.indices) == 0:
