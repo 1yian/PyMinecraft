@@ -108,6 +108,8 @@ class Window(pyglet.window.Window):
                 self.camera.movementInput[1] += 1
             elif key == currKey.LSHIFT:
                 self.camera.movementInput[1] -= 1
+            elif key == currKey.R:
+                self.camera.sprinting = not self.camera.sprinting
         if key == currKey.ESCAPE:
             self.pause = not self.pause
             self.set_exclusive_mouse(not self.pause)
