@@ -150,6 +150,7 @@ class Chunk:
 
         x, y, z = local_position
         self.block_types[x][y][z] = block_type
+        self.update_surrounding()
         self.synced_with_gpu = False
 
     def is_in_range(self, camera_pos, max_distance):
@@ -175,7 +176,18 @@ class Chunk:
                     i += 1
 
         self.generated = True
+
+        self.update_surrounding()
         self.synced_with_gpu = False
+
+    def update_surrounding(self):
+        for x in range(-1, 2):
+            for y in range(-1, 2):
+                for z in range(-1, 2):
+                    position = (x + (self.world_coord_pos[0] / 16), y + (self.world_coord_pos[1] / 16),
+                                       z + (self.world_coord_pos[2] / 16))
+                    if position in self.world.chunks:
+                        self.world.chunks[position].synced_with_gpu = False
 
     def draw(self):
         if len(self.indices) == 0:
