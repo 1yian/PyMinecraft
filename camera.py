@@ -41,3 +41,7 @@ class Camera:
         mvpMatrix = matrix_pyglm.MatrixGLM4D((self.projectionMatrix.getGLMMatrix()) * (self.modelviewMatrix.getGLMMatrix()))
         # Send MVP matrix to shader
         shader.passMatrixToShaders(shader.getUniformInShaders(b"mvpMatrix"), mvpMatrix)
+
+    def getRay(self):
+        return [math.cos(self.currentRotation[0]) * math.cos(self.currentRotation[1]), math.sin(self.currentRotation[1]),
+                                     math.sin(self.currentRotation[0]) * math.cos(self.currentRotation[1])]

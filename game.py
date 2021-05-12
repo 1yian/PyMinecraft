@@ -6,6 +6,7 @@ from textures.textures import TextureDict
 import camera
 import shaders.shaders as shaders
 import math
+import numpy
 
 MIN_SIZE = 50
 
@@ -59,6 +60,8 @@ class Window(pyglet.window.Window):
         self.pause = False
         self.set_exclusive_mouse(True)
 
+        self.currentBlockType = CubeTypes.air
+
         pyglet.clock.schedule_interval(self.update, 1.0 / 10000)
 
     def update(self, dt):
@@ -91,6 +94,33 @@ class Window(pyglet.window.Window):
             forward = math.tau / 4
             self.camera.currentRotation[1] = max(min(forward, self.camera.currentRotation[1]),
                                           -forward)  # don't want to snap the character's neck
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        unitRay = self.camera.getRay()
+        for distance in numpy.arange(0, 3, 0.1):
+            pos = self.camera.currentPosition.copy()
+            pos[0] += unitRay[0] * distance
+            pos[1] += unitRay[1] * distance
+            pos[2] += unitRay[2] * distance
+            intersectedBlockType = self.world.get_block_type_at(pos)
+            if button == pyglet.window.mouse.LEFT:
+                if intersectedBlockType != CubeTypes.air:
+                    self.world.set_block_type_at(pos, CubeTypes.air)
+                    break
+            elif button == pyglet.window.mouse.MIDDLE:
+                if intersectedBlockType != CubeTypes.air:
+                    self.currentBlockType = intersectedBlockType
+                    break
+            elif button == pyglet.window.mouse.RIGHT:
+                tempPos = self.camera.currentPosition.copy()
+                tempPos[0] += unitRay[0] * (distance - 0.1)
+                tempPos[1] += unitRay[1] * (distance - 0.1)
+                tempPos[2] += unitRay[2] * (distance - 0.1)
+                if intersectedBlockType != CubeTypes.air:
+                    if self.world.get_block_type_at(tempPos) == CubeTypes.air:
+                        self.world.set_block_type_at(tempPos, self.currentBlockType)
+                        break
+
 
     def on_key_press(self, key, modifiers):
         currKey = pyglet.window.key

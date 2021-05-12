@@ -2,7 +2,6 @@ import ctypes
 from cube import Cube, CubeTypes
 import pyglet.gl as gl
 import math
-import copy
 
 
 # Represents a single mesh of the exposed faces of a chunk of cubes.
