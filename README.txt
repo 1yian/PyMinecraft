@@ -12,7 +12,7 @@ file makes it easy to convert glm matrices into python matrices so that it's con
 generates chunks and draws them onto the window. 
 
 HOW TO RUN THE PROJECT DEMO:
-1. Install Python from https://www.python.org/
+1. Install Python and PIP from https://www.python.org/
 2. Install the following libraries:
 Pyglet
 PyGLM
@@ -23,13 +23,13 @@ perlin_noise
 
 HOW TO OPERATE INSIDE THE DEMO:
 'WASD' to move your camera
+'Mouse Button 1' to break a block
+'Mouse Button 2' to place a block
+'Mouse Button 3' to select a block to be placed
 'R' to toggle fast traveling
 'Escape' to pause the game
 'Shift' to move down
 'Space' to move up
-'Mouse Button 1' to break a block
-'Mouse Button 2' to place a block
-'Mouse Button 3' to select a block to be placed
 
 On my honor, I have submitted the eCIS survey.
 Signed:
