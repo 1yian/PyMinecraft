@@ -4,6 +4,7 @@ import pyglet.gl as gl
 import math
 import copy
 
+
 # Represents a single mesh of the exposed faces of a chunk of cubes.
 class Chunk:
     SIDE_LENGTH = 16
@@ -19,6 +20,7 @@ class Chunk:
 
         self.world = world
         self.cube_types = cube_types
+        self.generated = False
 
         # Initialize a VAO
         self.vao = gl.GLuint(0)
@@ -47,6 +49,7 @@ class Chunk:
         self.shading_values = []
         self.indices = []
         self.synced_with_gpu = False
+        self.generate_chunk()
 
     def pass_to_gpu(self):
         self.vertices, self.tex_coords, self.shading_values, self.indices = [], [], [], []
@@ -56,7 +59,7 @@ class Chunk:
             block_type = self.block_types[x][y][z]
 
             cube = self.cube_types[block_type]
-            #print(cube.textures)
+            # print(cube.textures)
             positions, _, texture_coords, shading_vals = cube.get_face_info(face_type)
 
             xw, yw, zw = (self.world_coord_pos[0] + x,
@@ -86,7 +89,6 @@ class Chunk:
                                       self.world_coord_pos[2] + z)
 
                         position = (x, y, z)
-
 
                         if self.world.get_block_type_at((xw + 1, yw, zw)) == CubeTypes.air:
                             add_face(0, position)
@@ -153,10 +155,30 @@ class Chunk:
 
     def is_in_range(self, camera_pos, max_distance):
         camera_pos_copy = copy.copy(camera_pos)
-        camera_pos_copy[2] = -camera_pos_copy[2] 
-        dist = math.sqrt(sum([(camera_pos_copy[i] - self.world_coord_pos[i])**2 for i in [0, 2]]))
-        #print(dist)
+        camera_pos_copy[2] = -camera_pos_copy[2]
+        dist = math.sqrt(sum([(camera_pos_copy[i] - self.world_coord_pos[i]) ** 2 for i in [0, 2]]))
         return dist <= max_distance
+
+    def generate_chunk(self):
+        if self.generated:
+            return
+        if self.world_coord_pos[1] > 70 or self.world_coord_pos[1] < -70:
+            return
+        for x in range(Chunk.SIDE_LENGTH):
+            for z in range(Chunk.SIDE_LENGTH):
+                world_x = self.world_coord_pos[0] + x
+                world_z = self.world_coord_pos[2] + z
+                y = self.world.get_height_at(world_x, world_z) + 1
+
+                i = 0
+                while i <= (y - self.world_coord_pos[1]) and i < Chunk.SIDE_LENGTH:
+                    self.block_types[x][i][z] = CubeTypes.dirt
+                    if i == int(y - self.world_coord_pos[1]):
+                        self.block_types[x][i][z] = CubeTypes.grass
+                    i += 1
+
+        self.generated = True
+        self.synced_with_gpu = False
 
     def draw(self):
         if len(self.indices) == 0:
