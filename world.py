@@ -70,7 +70,7 @@ class World:
         for x in [0, -1, 1, -2, 2, -3, 3]:
             for z in [0, -1, 1, -2, 2, -3, 3]:
                 for y in [0, -1, 1, -2, 2, -3, 3]:
-                    position = (chunk_pos[0] + x, y, -chunk_pos[2] + z)
+                    position = (chunk_pos[0] + x, y, chunk_pos[2] + z)
                     if position not in self.chunks:
                         self.chunks[position] = Chunk(
                             (position[0] * Chunk.SIDE_LENGTH, position[1] * Chunk.SIDE_LENGTH,
@@ -84,7 +84,7 @@ class World:
         for x in range(-4, 4):
             for y in range(-2, 2):
                 for z in range(-4, 4):
-                    position = (chunk_pos[0] + x, chunk_pos[1] + y, -chunk_pos[2] + z)
+                    position = (chunk_pos[0] + x, chunk_pos[1] + y, chunk_pos[2] + z)
                     if position not in self.chunks:
                         self.chunks[position] = Chunk(
                             (position[0] * Chunk.SIDE_LENGTH, position[1] * Chunk.SIDE_LENGTH,

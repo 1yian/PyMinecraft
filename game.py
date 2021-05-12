@@ -74,7 +74,6 @@ class Window(pyglet.window.Window):
         
 
     def on_resize(self, width, height):
-        print(f"Resize {width} * {height}")  # print out window size
         gl.glViewport(0, 0, width, height)
 
     def on_mouse_motion(self, x, y, dx, dy):
@@ -86,7 +85,7 @@ class Window(pyglet.window.Window):
     def mouse_movement_action(self, dx, dy):
         if not self.pause:
             sens = 0.001
-            self.camera.currentRotation[0] -= sens * dx
+            self.camera.currentRotation[0] += sens * dx
             self.camera.currentRotation[1] += sens * dy
 
             forward = math.tau / 4
@@ -132,6 +131,6 @@ class Window(pyglet.window.Window):
 
 
 if __name__ == "__main__":
-    window = Window(width = 800, height = 600, caption = "Voxel World", resizable = True, vsync = False)
+    window = Window(width = 1600, height = 900, caption = "Voxel World", resizable = True, vsync = False)
     gl.glClearColor(0.5, 0.7, 1, 1)
     pyglet.app.run()
