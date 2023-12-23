@@ -21,7 +21,7 @@ pip install pyglet pyglm numpy perlin_noise
 
 Start the game by running:
 ```
-python Game.py
+python game.py
 ```
 
 ## Gameplay
