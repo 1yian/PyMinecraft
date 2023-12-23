@@ -39,8 +39,8 @@ The content is as follows:
 - the `textures.py` file procedurally generates textures for the block faces to use
 - the `camera.py` file updates the camera's orientation and the Model-View-Projection Matrix that makes the scene 3 dimensional
 - the `chunk.py` file contains everything needed to load chunks into the world
-- the matrix_pyglm.pyfile makes it easy to convert glm matrices into python matrices so that it's convenient to pass into shaders
-- the world.py file generates chunks and draws them onto the window
+- the `matrix_pyglm.py` file makes it easy to convert glm matrices into python matrices so that it's convenient to pass into shaders
+- the `world.py` file generates chunks and draws them onto the window
 
 
 
